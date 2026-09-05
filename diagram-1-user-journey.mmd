@@ -1,0 +1,45 @@
+flowchart LR
+    U[User] --> UI
+    UI --> UP[Upload resume or blueprint<br/>Planned]
+    UP --> EX[Extract skills, experience,<br/>role and work preferences<br/>Agent interface exists; upload planned]
+    EX --> PR[Review and edit extracted profile<br/>UI and workflow planned]
+    PR --> CF[Configure profile fields,<br/>platforms and companies]
+    CF --> DISC[Discover and score jobs<br/>Placeholder discovery today]
+    DISC --> GEN[Generate tailored resume<br/>and application draft<br/>Safe placeholder today]
+    GEN --> REV[Review each application]
+    REV --> GATE{Explicit human approval<br/>required}
+    GATE -->|Needs changes| GEN
+    GATE -->|Approved| HANDOFF[Approved handoff only<br/>No automatic submission]
+    HANDOFF --> EXT[User submits to employer<br/>Planned external workflow]
+    EXT --> LOG[Log submitted status<br/>Planned]
+
+    subgraph Frontend[Next.js Frontend]
+        UI[RoleReady Dashboard<br/>Implemented UI]
+        CLIENT[Frontend API client<br/>Config fetch implemented;<br/>workflow wiring planned]
+        UI --> CLIENT
+    end
+
+    subgraph Backend[FastAPI Backend]
+        ROUTES[Profile, jobs and<br/>application routes]
+        PROFILE[(Configuration and<br/>profile data in memory)]
+        AGENTS[Agent service boundary]
+        APPROVAL[Approval state guard<br/>draft to review to approved]
+        ROUTES --> PROFILE
+        ROUTES --> AGENTS
+        ROUTES --> APPROVAL
+    end
+
+    CLIENT -. HTTP .-> ROUTES
+    CF -. saved through planned UI wiring .-> ROUTES
+    DISC -. backend service .-> ROUTES
+    GEN -. backend service .-> AGENTS
+    GATE -. enforced by .-> APPROVAL
+
+    classDef implemented fill:#e8f5e9,stroke:#2e7d32,color:#17351b;
+    classDef partial fill:#fff4d6,stroke:#a66b00,color:#4f3500;
+    classDef planned fill:#e8f1fb,stroke:#326da8,color:#173753;
+    classDef gate fill:#fdeaea,stroke:#b3261e,color:#5f1713,stroke-width:2px;
+    class UI,ROUTES,PROFILE,APPROVAL implemented;
+    class CLIENT,CF,DISC,GEN,AGENTS partial;
+    class UP,EX,PR,EXT,LOG,HANDOFF planned;
+    class GATE gate;

@@ -1,0 +1,45 @@
+flowchart TB
+    ENTRY[FastAPI entrypoint<br/>app.main] --> HEALTH[GET /health]
+    ENTRY --> ROUTER[/api router]
+
+    ROUTER --> AUTH[Auth routes<br/>Local login scaffold<br/>Google config hook]
+    ROUTER --> PROFILE[Profile routes<br/>GET and PUT]
+    ROUTER --> CONFIG[Config route<br/>Runtime feature flags]
+    ROUTER --> JOBS[Jobs routes<br/>List and discover]
+    ROUTER --> APPS[Application routes<br/>List, draft, review,<br/>approve, mark draft]
+
+    PROFILE --> STORE[(In-memory starter store<br/>Profile, jobs, applications)]
+    JOBS --> DISCOVERY[Job discovery service]
+    DISCOVERY --> STORE
+    APPS --> APPLICATION[Application service]
+    APPLICATION --> STORE
+
+    APPLICATION --> DRAFT[Draft]
+    DRAFT --> REVIEW[Review]
+    REVIEW --> STATE_GATE{confirmed true?}
+    STATE_GATE -->|No| REVIEW
+    STATE_GATE -->|Yes| APPROVED[Approved]
+    APPROVED --> RULE[No submitted state<br/>and no auto-submit]
+
+    DISCOVERY --> AGENT[Agent service boundary]
+    APPLICATION --> AGENT
+    AGENT --> EXTRACT[Resume extraction interface]
+    AGENT --> MATCH[Job match scoring]
+    AGENT --> TAILOR[Resume tailoring]
+    AGENT --> WRITE[Answer and cover-letter drafting<br/>Cover note included today]
+
+    ENV{OPENAI_API_KEY present?} -->|No| PLACEHOLDER[Safe placeholder agent<br/>Implemented default]
+    ENV -->|Yes| OPENAIHOOK[OpenAI provider hook<br/>Configuration-only]
+    PLACEHOLDER --> AGENT
+    OPENAIHOOK --> NOTE[Currently inherits<br/>placeholder behavior]
+    NOTE --> AGENT
+    OPENAIHOOK -. future SDK calls .-> OPENAI[OpenAI API<br/>Planned live integration]
+
+    classDef implemented fill:#e8f5e9,stroke:#2e7d32,color:#17351b;
+    classDef partial fill:#fff4d6,stroke:#a66b00,color:#4f3500;
+    classDef planned fill:#e8f1fb,stroke:#326da8,color:#173753;
+    classDef gate fill:#fdeaea,stroke:#b3261e,color:#5f1713,stroke-width:2px;
+    class ENTRY,HEALTH,ROUTER,PROFILE,CONFIG,JOBS,APPS,STORE,DISCOVERY,APPLICATION,DRAFT,REVIEW,APPROVED,AGENT,EXTRACT,MATCH,TAILOR,WRITE,PLACEHOLDER implemented;
+    class AUTH,ENV,OPENAIHOOK,NOTE partial;
+    class OPENAI planned;
+    class STATE_GATE,RULE gate;

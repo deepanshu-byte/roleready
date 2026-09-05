@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid #d6cebe;
+  border-radius: 8px;
+  background: #fff;
+  color: #22231f;
+  outline: none;
+  padding: 0.75rem 0.85rem;
+}
+
+.textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #184d47;
+  box-shadow: 0 0 0 3px rgba(24, 77, 71, 0.16);
+}
+
+.small-button,
+.icon-button,
+.primary-button,
+.secondary-button {
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.5rem;
+  min-height: 2.35rem;
+  justify-content: center;
+}
+
+.small-button {
+  background: #ede7dc;
+  color: #3d3932;
+  padding: 0 0.8rem;
+  white-space: nowrap;
+}
+
+.icon-button {
+  background: #184d47;
+  color: #fff;
+  width: 2.35rem;
+}
+
+.primary-button {
+  background: #184d47;
+  color: #fff;
+  padding: 0 1rem;
+}
+
+.secondary-button {
+  background: #fff;
+  border-color: #b9a98b;
+  color: #4f3d1d;
+  padding: 0 1rem;
+}
+
+.status-ok,
+.status-wait {
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  max-width: 16rem;
+  overflow-wrap: anywhere;
+  padding: 0.35rem 0.7rem;
+  text-align: right;
+}
+
+.status-ok {
+  background: #e7efe4;
+  color: #24533b;
+}
+
+.status-wait {
+  background: #fff1d7;
+  color: #7a4d00;
+}
+
+@media (max-width: 640px) {
+  .small-button {
+    max-width: 8.5rem;
+    white-space: normal;
+  }
+}

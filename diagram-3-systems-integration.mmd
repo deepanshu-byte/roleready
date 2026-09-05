@@ -1,0 +1,29 @@
+flowchart LR
+    USER[User] --> FRONTEND[Next.js dashboard<br/>Implemented]
+    FRONTEND --> CLIENT[API client<br/>Runtime config connected;<br/>other actions planned]
+    CLIENT --> API[FastAPI backend<br/>Implemented]
+
+    API --> MEMORY[(In-memory data<br/>Implemented starter)]
+    API -. replace with persistence .-> DB[(Persistent database<br/>Planned)]
+
+    USER -. future sign-in .-> GOOGLE[Google OAuth<br/>Configuration hooks only]
+    GOOGLE -. future token flow .-> API
+
+    API -. provider hook; no live calls .-> OPENAI[OpenAI API<br/>Configuration-only boundary]
+    API -. future discovery adapters .-> SOURCES[Job boards and<br/>company ATS sources<br/>Planned]
+    FRONTEND -. future upload .-> FILES[Resume file storage<br/>and upload service<br/>Planned]
+    FILES -. extracted content .-> API
+
+    API --> APPROVAL{Human approval gate<br/>Implemented state guard}
+    APPROVAL -->|Not approved| STOP[Remain in draft or review]
+    APPROVAL -->|Explicitly approved| OUTBOUND[Outbound application target<br/>Planned; no auto-submit]
+    OUTBOUND -. future status callback<br/>or manual logging .-> API
+
+    classDef implemented fill:#e8f5e9,stroke:#2e7d32,color:#17351b;
+    classDef partial fill:#fff4d6,stroke:#a66b00,color:#4f3500;
+    classDef planned fill:#e8f1fb,stroke:#326da8,color:#173753;
+    classDef gate fill:#fdeaea,stroke:#b3261e,color:#5f1713,stroke-width:2px;
+    class FRONTEND,API,MEMORY,STOP implemented;
+    class CLIENT,GOOGLE,OPENAI partial;
+    class DB,SOURCES,FILES,OUTBOUND planned;
+    class APPROVAL gate;
